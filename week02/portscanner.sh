@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -o errexit # Exit on most errors
-
 # Assign input arguments to variables
 hostfile=$1
 portfile=$2
@@ -24,15 +22,15 @@ echo "host,port"
 
 for host in $(cat $hostfile); do
   for port in $(cat $portfile); do
-    timeout .1 bash -c "echo >/dev/tcp/$host/$port" 2>errfile && echo "$host,$port"
+    timeout .1 bash -c "echo >/dev/tcp/$host/$port" 2>$errfile && echo "$host,$port"
   done
 done
 
 # Check for presence of stderr
-if [ -s errfile ]; then
+if [ -s $errfile ]; then
   echo "Presence of errors from connections!"
-  cat errfile
-  rm errfile
+  cat $errfile
+  rm $errfile
   exit 1
 fi
 
